@@ -1,4 +1,6 @@
 #include <Arduino.h>
+#include <Wire.h>
+#include <LOLIN_I2C_MOTOR.h>
 // 4   	      GND 	    Ground
 // 5   	      D2 	      Digital IO Pin 2
 // 6   	      D3 	      Digital IO Pin 3
@@ -27,56 +29,74 @@
 // 30 	      VIN 	    Unregulated Supply
 
 void vibrate(int time);
-void tighten();
-void loosen();
+void tighten(int time);
+void loosen(int time);
 bool buttonPressed();
 
 int TEST_LED_PIN = 13;
-int VIBRATE_PIN = 5;
-int TIGHTEN_PIN = 2;
 int BUTTON_PIN = 3;
-int STATIC_OUTPUT = 4;
+
 
 void setup() {
   pinMode(TEST_LED_PIN, OUTPUT);
-  pinMode(VIBRATE_PIN, OUTPUT);
-  pinMode(TIGHTEN_PIN, OUTPUT);
-  pinMode(BUTTON_PIN, INPUT);
-  pinMode(STATIC_OUTPUT, OUTPUT);
-  digitalWrite(STATIC_OUTPUT, HIGH);  
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
 }
 
 void loop() {
-  // if (buttonPressed()) {
-  //   tighten();
-  //   vibrate(5000);
-  //   loosen();
-  //   delay(1000);           
+  if (buttonPressed()) {
+    tighten(2000);
+    vibrate(5000);
+    delay(2000);
+    loosen(2000);
+    delay(2000);           
+  }
+  // else {
+  // } 
+  // while (buttonPressed()) {
+  //   digitalWrite(TEST_LED_PIN, HIGH);
+  //   delay(100);
   // }
-  vibrate(5000);
-  delay(1000);           
+  // digitalWrite(TEST_LED_PIN, LOW);
+  delay(100);
 }
 
 bool buttonPressed() {
-  return digitalRead(BUTTON_PIN) == HIGH;
+  return (digitalRead(BUTTON_PIN) == LOW);
 }
 
 void vibrate(int time) {
-  digitalWrite(VIBRATE_PIN, HIGH);
-  digitalWrite(TEST_LED_PIN, HIGH);
-  delay(time);           
-  digitalWrite(TEST_LED_PIN, LOW);
-  digitalWrite(VIBRATE_PIN, LOW);
+  LOLIN_I2C_MOTOR motor; 
+  motor.changeFreq(MOTOR_CH_A, 1000); 
+
+  motor.changeStatus(MOTOR_CH_A, MOTOR_STATUS_CW);
+  motor.changeDuty(MOTOR_CH_A, 100);
+  delay(time);
+  
+  motor.changeStatus(MOTOR_CH_A, MOTOR_STATUS_STOP);
 }
 
-void tighten() {
-  digitalWrite(TIGHTEN_PIN, HIGH); 
-  delay(1000);          
-  digitalWrite(TIGHTEN_PIN, LOW);
+void tighten(int time) {
+  LOLIN_I2C_MOTOR motor; 
+  motor.changeFreq(MOTOR_CH_B, 1000); 
+
+  motor.changeStatus(MOTOR_CH_B, MOTOR_STATUS_CW);
+  motor.changeDuty(MOTOR_CH_B, 100);
+  // digitalWrite(TEST_LED_PIN, HIGH);
+  delay(time);
+  
+  motor.changeStatus(MOTOR_CH_B, MOTOR_STATUS_STOP);
+  // digitalWrite(TEST_LED_PIN, LOW);
 }
 
-void loosen() {
-  digitalWrite(TIGHTEN_PIN, HIGH); 
-  delay(1000);          
-  digitalWrite(TIGHTEN_PIN, LOW);
+void loosen(int time) {
+  LOLIN_I2C_MOTOR motor; 
+  motor.changeFreq(MOTOR_CH_B, 1000);
+
+  motor.changeStatus(MOTOR_CH_B, MOTOR_STATUS_CCW);
+  motor.changeDuty(MOTOR_CH_B, 100);
+  // digitalWrite(TEST_LED_PIN, HIGH);
+  delay(time);
+  
+  motor.changeStatus(MOTOR_CH_B, MOTOR_STATUS_STOP);
+  // digitalWrite(TEST_LED_PIN, LOW);
 }
