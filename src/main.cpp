@@ -44,19 +44,12 @@ void setup() {
 
 void loop() {
   if (buttonPressed()) {
-    tighten(2000);
+    tighten(9000);
     vibrate(5000);
-    delay(2000);
-    loosen(2000);
+    delay(200);
+    loosen(8000);
     delay(2000);           
   }
-  // else {
-  // } 
-  // while (buttonPressed()) {
-  //   digitalWrite(TEST_LED_PIN, HIGH);
-  //   delay(100);
-  // }
-  // digitalWrite(TEST_LED_PIN, LOW);
   delay(100);
 }
 
@@ -79,24 +72,20 @@ void tighten(int time) {
   LOLIN_I2C_MOTOR motor; 
   motor.changeFreq(MOTOR_CH_B, 1000); 
 
-  motor.changeStatus(MOTOR_CH_B, MOTOR_STATUS_CW);
+  motor.changeStatus(MOTOR_CH_B, MOTOR_STATUS_CCW);
   motor.changeDuty(MOTOR_CH_B, 100);
-  // digitalWrite(TEST_LED_PIN, HIGH);
   delay(time);
   
   motor.changeStatus(MOTOR_CH_B, MOTOR_STATUS_STOP);
-  // digitalWrite(TEST_LED_PIN, LOW);
 }
 
 void loosen(int time) {
   LOLIN_I2C_MOTOR motor; 
   motor.changeFreq(MOTOR_CH_B, 1000);
 
-  motor.changeStatus(MOTOR_CH_B, MOTOR_STATUS_CCW);
+  motor.changeStatus(MOTOR_CH_B, MOTOR_STATUS_CW);
   motor.changeDuty(MOTOR_CH_B, 100);
-  // digitalWrite(TEST_LED_PIN, HIGH);
   delay(time);
   
   motor.changeStatus(MOTOR_CH_B, MOTOR_STATUS_STOP);
-  // digitalWrite(TEST_LED_PIN, LOW);
 }
